@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Static Template</title>
+</head>
+<body>
+<div id="app">
+    <form id="add-comment-form">
+        <input id="comment-input" placeholder="comment here" type="text"/>
+        <input id="author-input" placeholder="enter author here" type="text"/>
+        <button onclick="ViewController.addNewComment()">Add new comment</button>
+        <button onclick="commentsFactory.setComments([])">Reset all comments</button>
+    </form>
+
+    <div id="comment-display-section"></div>
+</div>
+<script src="index.js"></script>
+</body>
+</html>
