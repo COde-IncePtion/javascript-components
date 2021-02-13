@@ -70,6 +70,8 @@ const ViewController = (function () {
         authorNameField.placeholder = "enter your name";
         authorNameField.type = "text";
 
+        const actionButtonsWrapper = document.createElement('span');
+
         const submitReplyBtn = document.createElement("button");
         submitReplyBtn.innerText = "Submit";
         submitReplyBtn.classList.add('secondary-btn');
@@ -80,9 +82,21 @@ const ViewController = (function () {
             updateView();
         }
 
+        const cancelBtn = document.createElement("button");
+        cancelBtn.innerText = "Cancel";
+        cancelBtn.classList.add('secondary-btn');
+
+        cancelBtn.onclick = () => {
+            replyViewWrapper.classList.remove('visible');
+            replyViewWrapper.classList.add('hide');
+        }
+
+        actionButtonsWrapper.appendChild(submitReplyBtn);
+        actionButtonsWrapper.appendChild(cancelBtn);
+
         replyViewWrapper.appendChild(commentInputField);
         replyViewWrapper.appendChild(authorNameField);
-        replyViewWrapper.appendChild(submitReplyBtn);
+        replyViewWrapper.appendChild(actionButtonsWrapper);
 
         return replyViewWrapper;
     }

@@ -136,6 +136,11 @@ button {
     margin-top: 10px;
 }
 
+.comment-btn-section > button:first-child {
+    margin-right: 10px;
+}
+
+
 .reply-view-wrapper {
     background: var(--light-orange);
     padding: 10px 10px;
@@ -153,7 +158,6 @@ button {
     width: 120px;
 }
 
-
-.comment-btn-section > button:first-child {
+.reply-view-wrapper > span >  button:first-child {
     margin-right: 10px;
 }
