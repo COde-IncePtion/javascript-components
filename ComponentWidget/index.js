@@ -59,9 +59,11 @@ const ViewController = (function () {
 
     const getReplyView = (comment) => {
         const replyViewWrapper = document.createElement("div");
+        replyViewWrapper.classList.add('hide');
+        replyViewWrapper.classList.add('reply-view-wrapper');
 
         const commentInputField = document.createElement("input");
-        commentInputField.placeholder = "enter your reply here";
+        commentInputField.placeholder = "write a reply";
         commentInputField.type = "text";
 
         const authorNameField = document.createElement("input");
@@ -69,9 +71,10 @@ const ViewController = (function () {
         authorNameField.type = "text";
 
         const submitReplyBtn = document.createElement("button");
-        submitReplyBtn.innerText = "submit reply";
+        submitReplyBtn.innerText = "Submit";
+        submitReplyBtn.classList.add('secondary-btn');
+
         submitReplyBtn.onclick = () => {
-            console.log(commentInputField.value, authorNameField.value)
             const replyObject = commentsFactory.getCommentObject(12, commentInputField.value, authorNameField.value)
             comment.replies.push(replyObject);
             updateView();
@@ -81,20 +84,50 @@ const ViewController = (function () {
         replyViewWrapper.appendChild(authorNameField);
         replyViewWrapper.appendChild(submitReplyBtn);
 
-        replyViewWrapper.className = "hide"
         return replyViewWrapper;
     }
 
+    const handleDelete = (comment)=>{
+        console.log("deleting");
+        updateView();
+    }
+
     const getCommentView = (comment) => {
+        const commentThreadWrapper = document.createElement('div');
+        commentThreadWrapper.classList.add('comment-thread-wrapper');
+
+
         const commentWrapper = document.createElement('div');
-        const commentTextWrapper = document.createElement('p');
-        commentTextWrapper.innerText = comment.commentText;
+        commentWrapper.classList.add('comment-wrapper');
+
+        const commentDisplaySection = document.createElement('div');
+        commentDisplaySection.classList.add('comment-display-section');
 
         const authorWrapper = document.createElement('p');
+        authorWrapper.classList.add('size2')
         authorWrapper.innerText = comment.authorName;
 
+        const commentTextWrapper = document.createElement('p');
+        commentTextWrapper.innerText = comment.commentText;
+        commentWrapper.classList.add('size4');
+
+        commentDisplaySection.appendChild(authorWrapper);
+        commentDisplaySection.appendChild(commentTextWrapper);
+
+        const btnSection = document.createElement('div');
+        btnSection.classList.add('comment-btn-section')
+
         const replyButton = document.createElement("button");
-        replyButton.innerText = "reply";
+        replyButton.classList.add('tertiary-btn');
+        replyButton.innerText = "Reply";
+
+        const deleteButton = document.createElement("button");
+        deleteButton.classList.add('tertiary-btn');
+        deleteButton.innerText = "Delete";
+        deleteButton.onclick = ()=>handleDelete(comment);
+
+        btnSection.appendChild(replyButton);
+        btnSection.appendChild(deleteButton);
 
         const replyView = getReplyView(comment);
 
@@ -103,17 +136,24 @@ const ViewController = (function () {
             replyView.classList.add("visible");
         };
 
-        commentWrapper.appendChild(commentTextWrapper);
-        commentWrapper.appendChild(authorWrapper);
-        commentWrapper.appendChild(replyButton);
+        commentWrapper.appendChild(commentDisplaySection);
+        commentWrapper.appendChild(btnSection);
         commentWrapper.appendChild(replyView);
-        if(comment.replies.length===0)
+
+        commentThreadWrapper.appendChild(commentWrapper);
+
+        if (comment.replies.length === 0)
             return commentWrapper;
 
-        const commentRepliesViews =[];
-        comment.replies.map(reply=> commentRepliesViews.push(getCommentView(reply)));
-        commentRepliesViews.map(replyView=> commentWrapper.appendChild(replyView));
-        return commentWrapper;
+        const replySectionView = document.createElement('div');
+        replySectionView.classList.add('reply-section-view')
+
+        const commentRepliesViews = [];
+        comment.replies.map(reply => commentRepliesViews.push(getCommentView(reply)));
+        commentRepliesViews.map(replyView => replySectionView.appendChild(replyView));
+
+        commentThreadWrapper.appendChild(replySectionView);
+        return commentThreadWrapper;
     }
 
     const updateView = () => {

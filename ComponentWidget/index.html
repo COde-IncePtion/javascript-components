@@ -5,15 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <link rel="stylesheet" href="index.css"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <title>Static Template</title>
 </head>
 <body>
 <div id="app">
-    <form id="add-comment-form">
-        <input id="comment-input" placeholder="comment here" type="text"/>
-        <input id="author-input" placeholder="enter author here" type="text"/>
-        <button onclick="ViewController.addNewComment()">Add new comment</button>
-        <button onclick="commentsFactory.setComments([])">Reset all comments</button>
+    <form id="add-comment-form" class="comment-input-form">
+        <div class="comment-input-section">
+            <textarea id="comment-input" class="comment-input-field" placeholder="comment here" rows="2" cols="50"></textarea>
+            <input id="author-input" placeholder="enter author here" type="text"/>
+        </div>
+        <div class="comment-form-cta">
+            <button onclick="ViewController.addNewComment()" class="comment-submit-btn primary-btn">Add new comment</button>
+            <button onclick="commentsFactory.setComments([])" class="primary-btn">Reset all comments</button>
+        </div>
     </form>
 
     <div id="comment-display-section"></div>

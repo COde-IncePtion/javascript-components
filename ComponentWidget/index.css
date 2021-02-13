@@ -1,7 +1,159 @@
+:root {
+    --light-orange: #f58634;
+    --orange: #fb743e;
+    --dark-blue: #383e56;
+    --green1: #c5d7bd;
+    --green2: #9fb8ad;
+    --fontBaseSize: 16;
+}
+
+* {
+    font-family: 'Lato', sans-serif;
+    box-sizing: border-box;
+}
+
+p {
+    margin: 2px 2px;
+}
+
+input {
+    width: 200px;
+    height: 30px;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 5px;
+}
+
+textarea {
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 10px;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+.primary-btn {
+    padding: 12px 10px;
+    border-radius: 10px;
+    background: var(--green2);
+}
+
+.secondary-btn {
+    padding: 5px 10px;
+    border-radius: 5px;
+    background: var(--green2);
+}
+
+.tertiary-btn {
+    padding: 2px 5px;
+    border-radius: 5px;
+    background: var(--green2);
+}
+
 .hide {
     display: none;
 }
 
 .visible {
     display: block;
+}
+
+.size1 {
+    font-size: calc(10rem / var(--fontBaseSize));
+}
+
+.size2 {
+    font-size: calc(12rem / var(--fontBaseSize));
+}
+
+.size3 {
+    font-size: calc(14rem / var(--fontBaseSize));
+}
+
+.size4 {
+    font-size: calc(16rem / var(--fontBaseSize));
+}
+
+.comment-input-form {
+    background: var(--orange);
+    width: 500px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 20px;
+    margin-bottom: 30px;
+}
+
+.comment-input-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-input-field {
+    resize: none;
+    margin-bottom: 20px;
+}
+
+.comment-form-cta {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.comment-submit-btn {
+    margin-right: 10px;
+}
+
+.comment-thread-wrapper {
+}
+
+.reply-section-view {
+    margin-left: 40px;
+}
+
+.comment-wrapper {
+    margin-bottom: 10px;
+}
+
+.comment-display-section {
+    padding: 5px 5px;
+    display: flex;
+    flex-direction: column;
+    background: var(--green1);
+    margin-bottom: 10px;
+    border-radius: 10px;
+    width: 400px;
+}
+
+.comment-btn-section {
+    margin-top: 10px;
+}
+
+.reply-view-wrapper {
+    background: var(--light-orange);
+    padding: 10px 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.reply-view-wrapper > input:first-child {
+    width: 260px;
+}
+
+.reply-view-wrapper > input:nth-last-child(2) {
+    margin: 0 10px;
+    width: 120px;
+}
+
+
+.comment-btn-section > button:first-child {
+    margin-right: 10px;
 }
