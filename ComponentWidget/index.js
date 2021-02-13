@@ -16,8 +16,8 @@ const store = {
         LocalStorageUtils.setItem(KEY, value);
         ViewController.updateView();
     },
-    syncCommentsWithStore: (comments) => {
-        LocalStorageUtils.setItem(KEY, comments);
+    syncCommentsWithStore: () => {
+        LocalStorageUtils.setItem(KEY, commentsFactory.getComments());
     }
 }
 
@@ -25,7 +25,7 @@ const CommentsFactory = (_comments) => {
     let comments = _comments;
 
     return {
-        getComments: () => JSON.parse(JSON.stringify(comments)),
+        getComments: () => comments,
         getCommentObject: (id, commentText, authorName) => ({
             id,
             commentText,
@@ -39,8 +39,8 @@ const CommentsFactory = (_comments) => {
         },
         addNewComment: (comment) => {
             comments.push(comment);
-            store.syncCommentsWithStore(comments);
-        }
+            store.syncCommentsWithStore();
+        },
     }
 }
 
@@ -57,19 +57,62 @@ const ViewController = (function () {
         updateView();
     }
 
+    const getReplyView = (comment) => {
+        const replyViewWrapper = document.createElement("div");
+
+        const commentInputField = document.createElement("input");
+        commentInputField.placeholder = "enter your reply here";
+        commentInputField.type = "text";
+
+        const authorNameField = document.createElement("input");
+        authorNameField.placeholder = "enter your name";
+        authorNameField.type = "text";
+
+        const submitReplyBtn = document.createElement("button");
+        submitReplyBtn.innerText = "submit reply";
+        submitReplyBtn.onclick = () => {
+            console.log(commentInputField.value, authorNameField.value)
+            const replyObject = commentsFactory.getCommentObject(12, commentInputField.value, authorNameField.value)
+            comment.replies.push(replyObject);
+            updateView();
+        }
+
+        replyViewWrapper.appendChild(commentInputField);
+        replyViewWrapper.appendChild(authorNameField);
+        replyViewWrapper.appendChild(submitReplyBtn);
+
+        replyViewWrapper.className = "hide"
+        return replyViewWrapper;
+    }
+
     const getCommentView = (comment) => {
         const commentWrapper = document.createElement('div');
-        const textWrapper = document.createElement('p');
-        commentWrapper.innerText = comment.commentText;
+        const commentTextWrapper = document.createElement('p');
+        commentTextWrapper.innerText = comment.commentText;
 
         const authorWrapper = document.createElement('p');
         authorWrapper.innerText = comment.authorName;
 
-        commentWrapper.appendChild(textWrapper);
+        const replyButton = document.createElement("button");
+        replyButton.innerText = "reply";
+
+        const replyView = getReplyView(comment);
+
+        replyButton.onclick = () => {
+            replyView.classList.remove("hide");
+            replyView.classList.add("visible");
+        };
+
+        commentWrapper.appendChild(commentTextWrapper);
         commentWrapper.appendChild(authorWrapper);
         commentWrapper.appendChild(replyButton);
+        commentWrapper.appendChild(replyView);
+        if(comment.replies.length===0)
+            return commentWrapper;
 
-        commentWrapper.onclick = () => onClickHandler(comment);
+        const commentRepliesViews =[];
+        comment.replies.map(reply=> commentRepliesViews.push(getCommentView(reply)));
+        commentRepliesViews.map(replyView=> commentWrapper.appendChild(replyView));
         return commentWrapper;
     }
 
@@ -87,12 +130,8 @@ const ViewController = (function () {
     }
 })()
 
-const onClickHandler = (comment) => {
-    console.log("===", comment)
-    comment.authorName = "xxxxxxxxxx"
-}
-
 window.onload = ViewController.updateView;
+window.onunload = store.syncCommentsWithStore;
 document.getElementById("add-comment-form").onsubmit = (e) => {
     e.preventDefault()
 }
