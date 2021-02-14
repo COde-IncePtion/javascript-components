@@ -21,16 +21,38 @@ const store = {
     }
 }
 
+const commentMap = new Map();
+
+const initializeMap = (comments) => {
+    if (comments.length === 0)
+        return;
+
+    comments.map(comment => {
+        commentMap.set(comment.id, comment);
+        initializeMap(comment.replies);
+    })
+}
+
 const CommentsFactory = (_comments) => {
     let comments = _comments;
 
+    const removeParentComment = (comment) => {
+        comments.splice(comments.findIndex(c => c.id === comment.id), 1);
+    }
+
+    const removeChildComment = (comment) => {
+        const parentComment = commentMap.get(comment.parentCommentId)
+        parentComment.replies.splice(parentComment.replies.findIndex(reply => reply.id === comment.id), 1);
+    }
+
     return {
         getComments: () => comments,
-        getCommentObject: (id, commentText, authorName) => ({
+        getCommentObject: (id, commentText, authorName, parentCommentId = null) => ({
             id,
             commentText,
             authorName,
-            replies: []
+            replies: [],
+            parentCommentId
         }),
         setComments: (_comments) => {
             comments = _comments;
@@ -38,9 +60,14 @@ const CommentsFactory = (_comments) => {
             ViewController.updateView()
         },
         addNewComment: (comment) => {
+            commentMap.set(comment.id, comment);
             comments.push(comment);
             store.syncCommentsWithStore();
         },
+        removeComment: (comment) => {
+            Boolean(comment.parentCommentId) ? removeChildComment(comment) : removeParentComment(comment);
+            store.syncCommentsWithStore();
+        }
     }
 }
 
@@ -77,7 +104,8 @@ const ViewController = (function () {
         submitReplyBtn.classList.add('secondary-btn');
 
         submitReplyBtn.onclick = () => {
-            const replyObject = commentsFactory.getCommentObject(12, commentInputField.value, authorNameField.value)
+            const replyObject = commentsFactory.getCommentObject(getUniqueId(), commentInputField.value, authorNameField.value, comment.id);
+            commentMap.set(replyObject.id, replyObject);
             comment.replies.push(replyObject);
             updateView();
         }
@@ -101,8 +129,8 @@ const ViewController = (function () {
         return replyViewWrapper;
     }
 
-    const handleDelete = (comment)=>{
-        console.log("deleting");
+    const handleDelete = (comment) => {
+        commentsFactory.removeComment(comment)
         updateView();
     }
 
@@ -138,7 +166,7 @@ const ViewController = (function () {
         const deleteButton = document.createElement("button");
         deleteButton.classList.add('tertiary-btn');
         deleteButton.innerText = "Delete";
-        deleteButton.onclick = ()=>handleDelete(comment);
+        deleteButton.onclick = () => handleDelete(comment);
 
         btnSection.appendChild(replyButton);
         btnSection.appendChild(deleteButton);
@@ -173,7 +201,7 @@ const ViewController = (function () {
     const updateView = () => {
         const commentsList = commentsFactory.getComments().map(comment => getCommentView(comment));
         const commentDisplaySection = document.getElementById("comment-display-section");
-        commentDisplaySection.innerHTML = ''
+        commentDisplaySection.innerHTML = '';
         commentsList.map(commentView => commentDisplaySection.appendChild(commentView));
     }
 
@@ -184,7 +212,10 @@ const ViewController = (function () {
     }
 })()
 
-window.onload = ViewController.updateView;
+window.onload = () => {
+    ViewController.updateView();
+    initializeMap(commentsFactory.getComments());
+};
 window.onunload = store.syncCommentsWithStore;
 document.getElementById("add-comment-form").onsubmit = (e) => {
     e.preventDefault()
