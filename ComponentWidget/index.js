@@ -1,8 +1,20 @@
 const KEY = "comments"
 
-const getUniqueId = function () {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
+
+const utils = (function () {
+    const getUniqueId = function () {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    const addChildrenToDom = (parent, children) => {
+        children.map(child => parent.appendChild(child));
+    }
+
+    return {
+        getUniqueId,
+        addChildrenToDom,
+    }
+})();
 
 const LocalStorageUtils = {
     setItem: (key, value) =>
@@ -78,9 +90,16 @@ const ViewController = (function () {
     const addNewComment = () => {
         const commentText = document.getElementById("comment-input").value;
         const authorName = document.getElementById("author-input").value;
-        let commentObj = commentsFactory.getCommentObject(getUniqueId(), commentText, authorName);
+        const commentObj = commentsFactory.getCommentObject(utils.getUniqueId(), commentText, authorName);
 
         commentsFactory.addNewComment(commentObj)
+        updateView();
+    }
+
+    const handleReply = (comment, commentInputField, authorNameField) => {
+        const replyObject = commentsFactory.getCommentObject(utils.getUniqueId(), commentInputField.value, authorNameField.value, comment.id);
+        commentMap.set(replyObject.id, replyObject);
+        comment.replies.push(replyObject);
         updateView();
     }
 
@@ -103,12 +122,7 @@ const ViewController = (function () {
         submitReplyBtn.innerText = "Submit";
         submitReplyBtn.classList.add('secondary-btn');
 
-        submitReplyBtn.onclick = () => {
-            const replyObject = commentsFactory.getCommentObject(getUniqueId(), commentInputField.value, authorNameField.value, comment.id);
-            commentMap.set(replyObject.id, replyObject);
-            comment.replies.push(replyObject);
-            updateView();
-        }
+        submitReplyBtn.onclick = () => handleReply(comment, commentInputField, authorNameField)
 
         const cancelBtn = document.createElement("button");
         cancelBtn.innerText = "Cancel";
@@ -119,12 +133,9 @@ const ViewController = (function () {
             replyViewWrapper.classList.add('hide');
         }
 
-        actionButtonsWrapper.appendChild(submitReplyBtn);
-        actionButtonsWrapper.appendChild(cancelBtn);
+        utils.addChildrenToDom(actionButtonsWrapper, [submitReplyBtn, cancelBtn])
 
-        replyViewWrapper.appendChild(commentInputField);
-        replyViewWrapper.appendChild(authorNameField);
-        replyViewWrapper.appendChild(actionButtonsWrapper);
+        utils.addChildrenToDom(replyViewWrapper, [commentInputField, authorNameField, actionButtonsWrapper])
 
         return replyViewWrapper;
     }
@@ -137,7 +148,6 @@ const ViewController = (function () {
     const getCommentView = (comment) => {
         const commentThreadWrapper = document.createElement('div');
         commentThreadWrapper.classList.add('comment-thread-wrapper');
-
 
         const commentWrapper = document.createElement('div');
         commentWrapper.classList.add('comment-wrapper');
@@ -153,8 +163,7 @@ const ViewController = (function () {
         commentTextWrapper.innerText = comment.commentText;
         commentWrapper.classList.add('size4');
 
-        commentDisplaySection.appendChild(authorWrapper);
-        commentDisplaySection.appendChild(commentTextWrapper);
+        utils.addChildrenToDom(commentDisplaySection, [authorWrapper, commentTextWrapper]);
 
         const btnSection = document.createElement('div');
         btnSection.classList.add('comment-btn-section')
@@ -168,8 +177,7 @@ const ViewController = (function () {
         deleteButton.innerText = "Delete";
         deleteButton.onclick = () => handleDelete(comment);
 
-        btnSection.appendChild(replyButton);
-        btnSection.appendChild(deleteButton);
+        utils.addChildrenToDom(btnSection, [replyButton, deleteButton]);
 
         const replyView = getReplyView(comment);
 
@@ -178,31 +186,31 @@ const ViewController = (function () {
             replyView.classList.add("visible");
         };
 
-        commentWrapper.appendChild(commentDisplaySection);
-        commentWrapper.appendChild(btnSection);
-        commentWrapper.appendChild(replyView);
+        utils.addChildrenToDom(commentWrapper, [commentDisplaySection, btnSection, replyView])
 
         commentThreadWrapper.appendChild(commentWrapper);
 
         if (comment.replies.length === 0)
-            return commentWrapper;
+            return commentThreadWrapper;
 
         const replySectionView = document.createElement('div');
         replySectionView.classList.add('reply-section-view')
 
         const commentRepliesViews = [];
         comment.replies.map(reply => commentRepliesViews.push(getCommentView(reply)));
-        commentRepliesViews.map(replyView => replySectionView.appendChild(replyView));
+
+        utils.addChildrenToDom(replySectionView, commentRepliesViews);
 
         commentThreadWrapper.appendChild(replySectionView);
+
         return commentThreadWrapper;
     }
 
     const updateView = () => {
         const commentsList = commentsFactory.getComments().map(comment => getCommentView(comment));
-        const commentDisplaySection = document.getElementById("comment-display-section");
+        const commentDisplaySection = document.getElementById("comments-section");
         commentDisplaySection.innerHTML = '';
-        commentsList.map(commentView => commentDisplaySection.appendChild(commentView));
+        utils.addChildrenToDom(commentDisplaySection, commentsList);
     }
 
     return {

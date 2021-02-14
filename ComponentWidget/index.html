@@ -7,22 +7,24 @@
     <link rel="stylesheet" href="index.css"/>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <title>Static Template</title>
+    <title>Comment Widget</title>
 </head>
 <body>
 <div id="app">
-    <form id="add-comment-form" class="comment-input-form">
-        <div class="comment-input-section">
-            <textarea id="comment-input" class="comment-input-field" placeholder="comment here" rows="2" cols="50"></textarea>
-            <input id="author-input" placeholder="enter author here" type="text"/>
-        </div>
-        <div class="comment-form-cta">
-            <button onclick="ViewController.addNewComment()" class="comment-submit-btn primary-btn">Add new comment</button>
-            <button onclick="commentsFactory.setComments([])" class="primary-btn">Reset all comments</button>
-        </div>
-    </form>
-
-    <div id="comment-display-section"></div>
+    <h1 class="heading">Comment Widget</h1>
+    <div class="form-section">
+        <form id="add-comment-form" class="comment-input-form">
+            <div class="comment-input-section">
+                <textarea id="comment-input" class="comment-input-field" placeholder="comment here" rows="2" cols="50"></textarea>
+                <input id="author-input" placeholder="enter author here" type="text"/>
+            </div>
+            <div class="comment-form-cta">
+                <button onclick="ViewController.addNewComment()" class="comment-submit-btn primary-btn">Add new comment</button>
+                <button onclick="commentsFactory.setComments([])" class="primary-btn">Reset all comments</button>
+            </div>
+        </form>
+    </div>
+    <div id="comments-section"></div>
 </div>
 <script src="index.js"></script>
 </body>

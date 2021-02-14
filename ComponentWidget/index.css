@@ -7,6 +7,17 @@
     --fontBaseSize: 16;
 }
 
+body{
+    width: 100%;
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+#app {
+    width: calc(100vh - 200px);
+}
+
 * {
     font-family: 'Lato', sans-serif;
     box-sizing: border-box;
@@ -80,6 +91,17 @@ button {
     font-size: calc(16rem / var(--fontBaseSize));
 }
 
+
+.heading{
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.form-section {
+    display: flex;
+    justify-content: center;
+}
+
 .comment-input-form {
     background: var(--orange);
     width: 500px;
@@ -111,15 +133,20 @@ button {
     margin-right: 10px;
 }
 
-.comment-thread-wrapper {
-}
-
 .reply-section-view {
     margin-left: 40px;
 }
 
 .comment-wrapper {
     margin-bottom: 10px;
+}
+
+.comment-btn-section {
+    margin-top: 10px;
+}
+
+.comment-btn-section > button:first-child {
+    margin-right: 10px;
 }
 
 .comment-display-section {
@@ -132,12 +159,8 @@ button {
     width: 400px;
 }
 
-.comment-btn-section {
-    margin-top: 10px;
-}
-
-.comment-btn-section > button:first-child {
-    margin-right: 10px;
+#comments-section > .comment-thread-wrapper {
+    margin-top: 40px;
 }
 
 
