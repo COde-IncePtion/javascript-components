@@ -222,7 +222,11 @@ const ViewController = (function () {
 })()
 
 window.onload = () => {
+    if (LocalStorageUtils.getItem(KEY) == null)
+        commentsFactory.setComments([]);
+
     ViewController.updateView();
+
     initializeMap(commentsFactory.getComments());
 };
 window.onunload = store.syncCommentsWithStore;
