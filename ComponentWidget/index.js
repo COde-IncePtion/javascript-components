@@ -79,7 +79,7 @@ const CommentsFactory = (_comments) => {
         removeComment: (comment) => {
             Boolean(comment.parentCommentId) ? removeChildComment(comment) : removeParentComment(comment);
             store.syncCommentsWithStore();
-        }
+        },
     }
 }
 
@@ -91,8 +91,9 @@ const ViewController = (function () {
         const commentText = document.getElementById("comment-input").value;
         const authorName = document.getElementById("author-input").value;
         const commentObj = commentsFactory.getCommentObject(utils.getUniqueId(), commentText, authorName);
-
         commentsFactory.addNewComment(commentObj)
+        document.getElementById("comment-input").value = '';
+        document.getElementById("author-input").value = '';
         updateView();
     }
 
@@ -229,3 +230,73 @@ document.getElementById("add-comment-form").onsubmit = (e) => {
     e.preventDefault()
 }
 
+const dummyData = [
+    {
+        id: 'kl9lr6wb2nhfq2hfhdu',
+        commentText: 'Any GOT fans over here??',
+        authorName: 'Ashish Rawat',
+        replies: [
+            {
+                id: 'kl9lrtlpruhsuz0al',
+                commentText: "Yeah Man, it's a GEM",
+                authorName: 'Abdul Sohail',
+                replies: [
+                    {
+                        id: 'kl9lsfz6m5zf3cmw9x',
+                        commentText: 'Oh, great, which season did u like the most?',
+                        authorName: 'Ashish Rawat',
+                        replies: [
+                            {
+                                id: 'kl9lushal7n660z6ld',
+                                commentText: 'Obviously, the third season!',
+                                authorName: 'Abdul Sohail',
+                                replies: [],
+                                parentCommentId: 'kl9lsfz6m5zf3cmw9x',
+                            },
+                        ],
+                        parentCommentId: 'kl9lrtlpruhsuz0al',
+                    },
+                    {
+                        id: 'kl9lvo9a0867lg2x921b',
+                        commentText: 'Which one is you fav character?',
+                        authorName: 'Ashok',
+                        replies: [
+                            {
+                                id: 'kl9lwx33ly9vkply5j8',
+                                commentText: "NO doubt it's Daenerys tragenian :P",
+                                authorName: 'Abdul Sohail',
+                                replies: [],
+                                parentCommentId: 'kl9lvo9a0867lg2x921b',
+                            },
+                        ],
+                        parentCommentId: 'kl9lrtlpruhsuz0al',
+                    },
+                ],
+                parentCommentId: 'kl9lr6wb2nhfq2hfhdu',
+            },
+            {
+                id: 'kl9lteoxnr6j8e6hi6',
+                commentText: "Nah, I don't like that kind of genre!",
+                authorName: 'Rupinder Singh',
+                replies: [
+                    {
+                        id: 'kl9lxh02jawpzfpsxne',
+                        commentText: 'I feel u should give it a try bro',
+                        authorName: 'Ashish Rawat',
+                        replies: [],
+                        parentCommentId: 'kl9lteoxnr6j8e6hi6',
+                    },
+                ],
+                parentCommentId: 'kl9lr6wb2nhfq2hfhdu',
+            },
+        ],
+        parentCommentId: null,
+    },
+    {
+        id: 'kl9lyfy5hr2x8w63dkg',
+        commentText: 'Anyone up for a Counter Strike Game?',
+        authorName: 'Abhishek Bhujel',
+        replies: [],
+        parentCommentId: null,
+    },
+]

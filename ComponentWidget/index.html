@@ -19,8 +19,9 @@
                 <input id="author-input" placeholder="enter author here" type="text"/>
             </div>
             <div class="comment-form-cta">
-                <button onclick="ViewController.addNewComment()" class="comment-submit-btn primary-btn">Add new comment</button>
-                <button onclick="commentsFactory.setComments([])" class="primary-btn">Reset all comments</button>
+                <button onclick="ViewController.addNewComment()" class="primary-btn">Add new comment</button>
+                <button onclick="commentsFactory.setComments([])" class="primary-btn comment-reset-btn">Reset all comments</button>
+                <button onclick="commentsFactory.setComments(dummyData)" class="primary-btn">Load Dummy Data</button>
             </div>
         </form>
     </div>
