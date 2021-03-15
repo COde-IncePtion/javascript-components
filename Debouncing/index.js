@@ -1,19 +1,20 @@
 
+const fetchDataDebounced = debounce(fetchData, 1000);
 
 let button = document.getElementById("click-me");
-button.addEventListener("click", debouce);
+button.addEventListener("click", fetchDataDebounced);
 
-let handler = 0;
-function debouce() {
-    if(handler)
-        clearInterval(handler);
+function debounce(fn, delay) {
+    let timer = null;
 
-    handler = setInterval(display, 3000)
+    return () => {
+        if (timer)
+            clearTimeout(timer);
+
+        timer = setTimeout(fn, delay)
+    }
 }
 
-function display() {
-    console.log("hey User !!!");
+function fetchData() {
+    console.log("Fetching data ...");
 }
-
-
-
