@@ -1,0 +1,26 @@
+
+.layout {
+    padding: 40px 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.section {
+    margin-top: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.algorithm-img {
+    margin: 20px 0;
+}
+
+.footer{
+    display: flex;
+    margin-top: 40px;
+    justify-content: flex-end;
+    bottom: 0;
+}
