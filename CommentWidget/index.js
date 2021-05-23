@@ -33,18 +33,6 @@ const store = {
     }
 }
 
-const commentMap = new Map();
-
-const initializeMap = (comments) => {
-    if (comments.length === 0)
-        return;
-
-    comments.map(comment => {
-        commentMap.set(comment.id, comment);
-        initializeMap(comment.replies);
-    })
-}
-
 const CommentsFactory = (_comments) => {
     let comments = _comments;
 
@@ -52,8 +40,7 @@ const CommentsFactory = (_comments) => {
         comments.splice(comments.findIndex(c => c.id === comment.id), 1);
     }
 
-    const removeChildComment = (comment) => {
-        const parentComment = commentMap.get(comment.parentCommentId)
+    const removeChildComment = (comment, parentComment) => {
         parentComment.replies.splice(parentComment.replies.findIndex(reply => reply.id === comment.id), 1);
     }
 
@@ -67,17 +54,16 @@ const CommentsFactory = (_comments) => {
             parentCommentId
         }),
         setComments: (_comments) => {
-            comments = _comments;
+            comments = JSON.parse(JSON.stringify(_comments));
             store.syncCommentsWithStore(comments);
             ViewController.updateView()
         },
         addNewComment: (comment) => {
-            commentMap.set(comment.id, comment);
             comments.push(comment);
             store.syncCommentsWithStore();
         },
-        removeComment: (comment) => {
-            Boolean(comment.parentCommentId) ? removeChildComment(comment) : removeParentComment(comment);
+        removeComment: (comment, parentComment) => {
+            Boolean(parentComment) ? removeChildComment(comment, parentComment) : removeParentComment(comment);
             store.syncCommentsWithStore();
         },
     }
@@ -99,7 +85,6 @@ const ViewController = (function () {
 
     const handleReply = (comment, commentInputField, authorNameField) => {
         const replyObject = commentsFactory.getCommentObject(utils.getUniqueId(), commentInputField.value, authorNameField.value, comment.id);
-        commentMap.set(replyObject.id, replyObject);
         comment.replies.push(replyObject);
         updateView();
     }
@@ -141,12 +126,11 @@ const ViewController = (function () {
         return replyViewWrapper;
     }
 
-    const handleDelete = (comment) => {
-        commentsFactory.removeComment(comment)
-        updateView();
+    const handleDelete = (comment, parentComment) => {
+        commentsFactory.removeComment(comment, parentComment)
     }
 
-    const getCommentView = (comment) => {
+    const getCommentView = (comment, parentComment) => {
         const commentThreadWrapper = document.createElement('div');
         commentThreadWrapper.classList.add('comment-thread-wrapper');
 
@@ -176,7 +160,10 @@ const ViewController = (function () {
         const deleteButton = document.createElement("button");
         deleteButton.classList.add('tertiary-btn');
         deleteButton.innerText = "Delete";
-        deleteButton.onclick = () => handleDelete(comment);
+        deleteButton.onclick = () => {
+            commentThreadWrapper.remove()
+            handleDelete(comment, parentComment)
+        };
 
         utils.addChildrenToDom(btnSection, [replyButton, deleteButton]);
 
@@ -198,7 +185,7 @@ const ViewController = (function () {
         replySectionView.classList.add('reply-section-view')
 
         const commentRepliesViews = [];
-        comment.replies.map(reply => commentRepliesViews.push(getCommentView(reply)));
+        comment.replies.map(reply => commentRepliesViews.push(getCommentView(reply, comment)));
 
         utils.addChildrenToDom(replySectionView, commentRepliesViews);
 
@@ -208,7 +195,7 @@ const ViewController = (function () {
     }
 
     const updateView = () => {
-        const commentsList = commentsFactory.getComments().map(comment => getCommentView(comment));
+        const commentsList = commentsFactory.getComments().map(comment => getCommentView(comment, null));
         const commentDisplaySection = document.getElementById("comments-section");
         commentDisplaySection.innerHTML = '';
         utils.addChildrenToDom(commentDisplaySection, commentsList);
@@ -226,8 +213,6 @@ window.onload = () => {
         commentsFactory.setComments([]);
 
     ViewController.updateView();
-
-    initializeMap(commentsFactory.getComments());
 };
 window.onunload = store.syncCommentsWithStore;
 document.getElementById("add-comment-form").onsubmit = (e) => {
